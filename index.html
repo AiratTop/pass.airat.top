@@ -95,32 +95,38 @@
       >
         <div class="output" id="passwordOutputWrap">
           <div class="output-value" id="passwordOutput" aria-live="polite"></div>
-          <div class="output-actions">
-            <button
-              class="icon-button"
-              type="button"
-              id="passwordRefresh"
-              aria-label="Generate new password"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
-                />
-              </svg>
-            </button>
-            <button
-              class="icon-button"
-              type="button"
-              id="passwordCopy"
-              aria-label="Copy password"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <div class="output-meta">
+            <span>
+              Password strength:
+              <strong id="passwordStrength" class="strength">-</strong>
+            </span>
+            <span>
+              Estimated crack time:
+              <strong id="passwordCrack">-</strong>
+            </span>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="action-button primary" type="button" id="passwordCopy">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
                 <path
                   d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
                 />
               </svg>
-            </button>
-          </div>
+            </span>
+            Copy password
+          </button>
+          <button class="action-button secondary" type="button" id="passwordRefresh">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </span>
+            Regenerate password
+          </button>
         </div>
         <p class="status" id="passwordStatus" role="status"></p>
 
@@ -166,32 +172,28 @@
       >
         <div class="output" id="passphraseOutputWrap">
           <div class="output-value" id="passphraseOutput" aria-live="polite"></div>
-          <div class="output-actions">
-            <button
-              class="icon-button"
-              type="button"
-              id="passphraseRefresh"
-              aria-label="Generate new passphrase"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
-                />
-              </svg>
-            </button>
-            <button
-              class="icon-button"
-              type="button"
-              id="passphraseCopy"
-              aria-label="Copy passphrase"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        </div>
+        <div class="action-row">
+          <button class="action-button primary" type="button" id="passphraseCopy">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
                 <path
                   d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
                 />
               </svg>
-            </button>
-          </div>
+            </span>
+            Copy passphrase
+          </button>
+          <button class="action-button secondary" type="button" id="passphraseRefresh">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </span>
+            Regenerate passphrase
+          </button>
         </div>
         <p class="status" id="passphraseStatus" role="status"></p>
 
@@ -230,32 +232,28 @@
       >
         <div class="output" id="usernameOutputWrap">
           <div class="output-value" id="usernameOutput" aria-live="polite"></div>
-          <div class="output-actions">
-            <button
-              class="icon-button"
-              type="button"
-              id="usernameRefresh"
-              aria-label="Generate new username"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path
-                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
-                />
-              </svg>
-            </button>
-            <button
-              class="icon-button"
-              type="button"
-              id="usernameCopy"
-              aria-label="Copy username"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        </div>
+        <div class="action-row">
+          <button class="action-button primary" type="button" id="usernameCopy">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
                 <path
                   d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
                 />
               </svg>
-            </button>
-          </div>
+            </span>
+            Copy username
+          </button>
+          <button class="action-button secondary" type="button" id="usernameRefresh">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </span>
+            Regenerate username
+          </button>
         </div>
         <p class="status" id="usernameStatus" role="status"></p>
 

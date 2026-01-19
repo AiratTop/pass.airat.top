@@ -20,6 +20,8 @@ const ui = {
     copy: document.querySelector("#passwordCopy"),
     status: document.querySelector("#passwordStatus"),
     error: document.querySelector("#passwordError"),
+    strength: document.querySelector("#passwordStrength"),
+    crack: document.querySelector("#passwordCrack"),
     length: document.querySelector("#passwordLength"),
     includeUpper: document.querySelector("#includeUpper"),
     includeLower: document.querySelector("#includeLower"),
@@ -148,6 +150,100 @@ function updateMinInputs() {
   if (!specialEnabled) {
     ui.password.minSpecial.value = "0";
   }
+}
+
+function getPasswordPoolSize() {
+  const avoidAmbiguous = ui.password.avoidAmbiguous.checked;
+  const sets = [];
+
+  const upper = filteredSet(PASSWORD.upper, avoidAmbiguous);
+  const lower = filteredSet(PASSWORD.lower, avoidAmbiguous);
+  const numbers = filteredSet(PASSWORD.numbers, avoidAmbiguous);
+  const special = filteredSet(PASSWORD.special, avoidAmbiguous);
+
+  if (ui.password.includeUpper.checked && upper) {
+    sets.push(upper);
+  }
+  if (ui.password.includeLower.checked && lower) {
+    sets.push(lower);
+  }
+  if (ui.password.includeNumbers.checked && numbers) {
+    sets.push(numbers);
+  }
+  if (ui.password.includeSpecial.checked && special) {
+    sets.push(special);
+  }
+
+  return sets.join("").length;
+}
+
+function formatDuration(seconds) {
+  if (!Number.isFinite(seconds)) {
+    return "Centuries";
+  }
+  if (seconds <= 1) {
+    return "Instant";
+  }
+
+  const units = [
+    { label: "Second", value: 1 },
+    { label: "Minute", value: 60 },
+    { label: "Hour", value: 60 * 60 },
+    { label: "Day", value: 60 * 60 * 24 },
+    { label: "Month", value: 60 * 60 * 24 * 30 },
+    { label: "Year", value: 60 * 60 * 24 * 365 },
+    { label: "Century", value: 60 * 60 * 24 * 365 * 100 },
+  ];
+
+  if (seconds >= units[6].value) {
+    return "Centuries";
+  }
+
+  for (let i = units.length - 1; i >= 0; i -= 1) {
+    if (seconds >= units[i].value) {
+      const amount = Math.round(seconds / units[i].value);
+      return `${amount} ${units[i].label}${amount === 1 ? "" : "s"}`;
+    }
+  }
+
+  return "Instant";
+}
+
+function updatePasswordStrength(password) {
+  const poolSize = getPasswordPoolSize();
+
+  if (!password || poolSize === 0) {
+    ui.password.strength.textContent = "-";
+    ui.password.strength.className = "strength";
+    ui.password.crack.textContent = "-";
+    return;
+  }
+
+  const entropy = password.length * Math.log2(poolSize);
+  const guessesPerSecond = 1e10;
+  const averageGuesses = Math.pow(2, entropy - 1);
+  const seconds = averageGuesses / guessesPerSecond;
+
+  let label = "Very Weak";
+  let className = "strength--very-weak";
+
+  if (entropy >= 80) {
+    label = "Very Strong";
+    className = "strength--very-strong";
+  } else if (entropy >= 60) {
+    label = "Strong";
+    className = "strength--strong";
+  } else if (entropy >= 40) {
+    label = "Fair";
+    className = "strength--fair";
+  } else if (entropy >= 28) {
+    label = "Weak";
+    className = "strength--weak";
+  }
+
+  ui.password.strength.textContent = label;
+  ui.password.strength.className = `strength ${className}`;
+  ui.password.crack.textContent = formatDuration(seconds);
 }
 
 function buildPassword() {
@@ -283,6 +379,7 @@ function buildUsername() {
 function refreshPassword() {
   const next = buildPassword();
   ui.password.output.textContent = next || "";
+  updatePasswordStrength(next);
 }
 
 function refreshPassphrase() {
