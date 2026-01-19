@@ -216,6 +216,7 @@ function updatePasswordStrength(password) {
     ui.password.strength.textContent = "-";
     ui.password.strength.className = "strength";
     ui.password.crack.textContent = "-";
+    ui.password.crack.className = "strength";
     return;
   }
 
@@ -244,6 +245,7 @@ function updatePasswordStrength(password) {
   ui.password.strength.textContent = label;
   ui.password.strength.className = `strength ${className}`;
   ui.password.crack.textContent = formatDuration(seconds);
+  ui.password.crack.className = `strength ${className}`;
 }
 
 function buildPassword() {
