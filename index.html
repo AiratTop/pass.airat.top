@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>pass.airat.top | Password, Passphrase &amp; Username Generator</title>
+    <meta
+      name="description"
+      content="Generate strong passwords, passphrases, and usernames locally in your browser. Private, fast, and offline-ready."
+    />
+    <meta
+      name="keywords"
+      content="password generator, passphrase, username generator, secure password, offline, local, airattop"
+    />
+    <meta name="author" content="AiratTop" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pass.airat.top/" />
+    <meta property="og:title" content="Pass.airat.top" />
+    <meta
+      property="og:description"
+      content="Generate strong passwords, passphrases, and usernames locally in your browser. Private, fast, and offline-ready."
+    />
+    <meta property="og:image" content="https://pass.airat.top/canvas.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Pass.airat.top" />
+    <meta
+      property="twitter:description"
+      content="Generate strong passwords, passphrases, and usernames locally in your browser."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg-glow" aria-hidden="true"></div>
+
+    <main class="shell">
+      <header class="brand">
+        <div>
+          <p class="brand-eyebrow">pass.airat.top</p>
+          <h1>Password, Passphrase &amp; Username Generator</h1>
+          <p class="brand-subtitle">Offline-friendly. Instant copy. Zero history.</p>
+        </div>
+      </header>
+
+      <nav class="tabs" role="tablist" aria-label="Generator type">
+        <button
+          class="tab is-active"
+          role="tab"
+          aria-selected="true"
+          aria-controls="panel-password"
+          id="tab-password"
+          data-tab="password"
+          type="button"
+        >
+          Password
+        </button>
+        <button
+          class="tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-passphrase"
+          id="tab-passphrase"
+          data-tab="passphrase"
+          type="button"
+        >
+          Passphrase
+        </button>
+        <button
+          class="tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-username"
+          id="tab-username"
+          data-tab="username"
+          type="button"
+        >
+          Username
+        </button>
+      </nav>
+
+      <section
+        class="panel is-active"
+        id="panel-password"
+        role="tabpanel"
+        aria-labelledby="tab-password"
+      >
+        <div class="output" id="passwordOutputWrap">
+          <div class="output-value" id="passwordOutput" aria-live="polite"></div>
+          <div class="output-actions">
+            <button
+              class="icon-button"
+              type="button"
+              id="passwordRefresh"
+              aria-label="Generate new password"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </button>
+            <button
+              class="icon-button"
+              type="button"
+              id="passwordCopy"
+              aria-label="Copy password"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="status" id="passwordStatus" role="status"></p>
+
+        <div class="card">
+          <h2>Options</h2>
+          <label class="field">
+            <span>Length</span>
+            <input type="number" id="passwordLength" min="5" max="128" value="30" />
+            <small>Value must be between 5 and 128.</small>
+          </label>
+
+          <div class="checks">
+            <label><input type="checkbox" id="includeUpper" checked /> A-Z</label>
+            <label><input type="checkbox" id="includeLower" checked /> a-z</label>
+            <label><input type="checkbox" id="includeNumbers" checked /> 0-9</label>
+            <label><input type="checkbox" id="includeSpecial" checked /> !@#$%&amp;*</label>
+          </div>
+
+          <div class="grid">
+            <label class="field">
+              <span>Minimum numbers</span>
+              <input type="number" id="minNumbers" min="0" max="128" value="1" />
+            </label>
+            <label class="field">
+              <span>Minimum special</span>
+              <input type="number" id="minSpecial" min="0" max="128" value="1" />
+            </label>
+          </div>
+
+          <label class="toggle">
+            <input type="checkbox" id="avoidAmbiguous" checked />
+            <span>Avoid ambiguous characters</span>
+          </label>
+          <p class="status" id="passwordError" role="status"></p>
+        </div>
+      </section>
+
+      <section
+        class="panel"
+        id="panel-passphrase"
+        role="tabpanel"
+        aria-labelledby="tab-passphrase"
+      >
+        <div class="output" id="passphraseOutputWrap">
+          <div class="output-value" id="passphraseOutput" aria-live="polite"></div>
+          <div class="output-actions">
+            <button
+              class="icon-button"
+              type="button"
+              id="passphraseRefresh"
+              aria-label="Generate new passphrase"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </button>
+            <button
+              class="icon-button"
+              type="button"
+              id="passphraseCopy"
+              aria-label="Copy passphrase"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="status" id="passphraseStatus" role="status"></p>
+
+        <div class="card">
+          <h2>Options</h2>
+          <label class="field">
+            <span>Number of words</span>
+            <input type="number" id="passphraseWords" min="3" max="20" value="6" />
+            <small>
+              Value must be between 3 and 20. Use 6 words or more for stronger
+              phrases.
+            </small>
+          </label>
+
+          <label class="field">
+            <span>Word separator</span>
+            <input type="text" id="passphraseSeparator" maxlength="3" value="-" />
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" id="passphraseCapitalize" />
+            <span>Capitalize</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="passphraseNumber" />
+            <span>Include number</span>
+          </label>
+        </div>
+      </section>
+
+      <section
+        class="panel"
+        id="panel-username"
+        role="tabpanel"
+        aria-labelledby="tab-username"
+      >
+        <div class="output" id="usernameOutputWrap">
+          <div class="output-value" id="usernameOutput" aria-live="polite"></div>
+          <div class="output-actions">
+            <button
+              class="icon-button"
+              type="button"
+              id="usernameRefresh"
+              aria-label="Generate new username"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </button>
+            <button
+              class="icon-button"
+              type="button"
+              id="usernameCopy"
+              aria-label="Copy username"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <p class="status" id="usernameStatus" role="status"></p>
+
+        <div class="card">
+          <h2>Options</h2>
+          <label class="field">
+            <span>Type</span>
+            <select id="usernameType">
+              <option value="single">Random word</option>
+              <option value="double">Two words</option>
+            </select>
+          </label>
+
+          <label class="toggle">
+            <input type="checkbox" id="usernameCapitalize" />
+            <span>Capitalize</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="usernameNumber" checked />
+            <span>Include number</span>
+          </label>
+        </div>
+      </section>
+    </main>
+
+    <script src="wordlist.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
