@@ -4,7 +4,7 @@
 
 Static, privacy-first password toolkit for generating passwords, passphrases, and usernames directly in the browser.
 
-Live site: https://pass.airat.top
+Live site: https://pass.airat.top and https://password.airat.top/
 
 ## Advantages
 
