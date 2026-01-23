@@ -51,10 +51,23 @@
 
     <main class="shell">
       <header class="brand">
-        <div>
+        <div class="brand-copy">
           <p class="brand-eyebrow">pass.airat.top</p>
           <h1>Password, Passphrase &amp; Username Generator</h1>
-          <p class="brand-subtitle">Offline-friendly. Instant copy. Zero history.</p>
+          <p class="brand-subtitle">
+            Offline-friendly. Instant copy. Zero history. Open-source. Privacy-first — no counters,
+            no analytics, pure randomness.
+          </p>
+        </div>
+        <div class="brand-actions">
+          <a
+            class="repo-link"
+            href="https://github.com/AiratTop/pass.airat.top"
+            target="_blank"
+            rel="noreferrer"
+          >
+            GitHub
+          </a>
         </div>
       </header>
 
@@ -221,11 +234,11 @@
           </label>
 
           <label class="toggle">
-            <input type="checkbox" id="passphraseCapitalize" />
+            <input type="checkbox" id="passphraseCapitalize" checked />
             <span>Capitalize</span>
           </label>
           <label class="toggle">
-            <input type="checkbox" id="passphraseNumber" />
+            <input type="checkbox" id="passphraseNumber" checked />
             <span>Include number</span>
           </label>
         </div>
