@@ -16,7 +16,7 @@ Tech stack:
 HTML, CSS, and vanilla JavaScript.
 
 Privacy:
-No storage, no history, and no analytics. All generation happens locally.
+No history or analytics; only local settings are stored. All generation happens locally.
 
 Contact:
 AiratTop — mail@airat.top

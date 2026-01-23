@@ -13,6 +13,7 @@ const ui = {
     passphrase: document.querySelector("#panel-passphrase"),
     username: document.querySelector("#panel-username"),
   },
+  reset: document.querySelector("#resetDefaults"),
   password: {
     output: document.querySelector("#passwordOutput"),
     outputWrap: document.querySelector("#passwordOutputWrap"),
@@ -56,6 +57,34 @@ const ui = {
 
 const state = {
   messageTimers: new Map(),
+  activeTab: "password",
+};
+
+const STORAGE_KEY = "pass-airat-top-settings-v1";
+
+const DEFAULTS = {
+  tab: "password",
+  password: {
+    length: 30,
+    includeUpper: true,
+    includeLower: true,
+    includeNumbers: true,
+    includeSpecial: true,
+    minNumbers: 1,
+    minSpecial: 1,
+    avoidAmbiguous: true,
+  },
+  passphrase: {
+    words: 6,
+    separator: "-",
+    capitalize: true,
+    includeNumber: true,
+  },
+  username: {
+    type: "single",
+    capitalize: false,
+    includeNumber: true,
+  },
 };
 
 function randomInt(max) {
@@ -135,6 +164,155 @@ function clampNumber(value, min, max) {
     return min;
   }
   return Math.min(Math.max(value, min), max);
+}
+
+function parseNumber(value, fallback) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isNaN(parsed) ? fallback : parsed;
+}
+
+function normalizeSettings(raw) {
+  const safe = raw && typeof raw === "object" ? raw : {};
+  const password = safe.password && typeof safe.password === "object" ? safe.password : {};
+  const passphrase = safe.passphrase && typeof safe.passphrase === "object" ? safe.passphrase : {};
+  const username = safe.username && typeof safe.username === "object" ? safe.username : {};
+
+  const separator =
+    typeof passphrase.separator === "string" && passphrase.separator.length > 0
+      ? passphrase.separator.slice(0, 3)
+      : DEFAULTS.passphrase.separator;
+
+  const tab =
+    safe.tab === "password" || safe.tab === "passphrase" || safe.tab === "username"
+      ? safe.tab
+      : DEFAULTS.tab;
+
+  return {
+    tab,
+    password: {
+      length: clampNumber(parseNumber(password.length, DEFAULTS.password.length), 5, 128),
+      includeUpper:
+        typeof password.includeUpper === "boolean"
+          ? password.includeUpper
+          : DEFAULTS.password.includeUpper,
+      includeLower:
+        typeof password.includeLower === "boolean"
+          ? password.includeLower
+          : DEFAULTS.password.includeLower,
+      includeNumbers:
+        typeof password.includeNumbers === "boolean"
+          ? password.includeNumbers
+          : DEFAULTS.password.includeNumbers,
+      includeSpecial:
+        typeof password.includeSpecial === "boolean"
+          ? password.includeSpecial
+          : DEFAULTS.password.includeSpecial,
+      minNumbers: clampNumber(parseNumber(password.minNumbers, DEFAULTS.password.minNumbers), 0, 128),
+      minSpecial: clampNumber(parseNumber(password.minSpecial, DEFAULTS.password.minSpecial), 0, 128),
+      avoidAmbiguous:
+        typeof password.avoidAmbiguous === "boolean"
+          ? password.avoidAmbiguous
+          : DEFAULTS.password.avoidAmbiguous,
+    },
+    passphrase: {
+      words: clampNumber(parseNumber(passphrase.words, DEFAULTS.passphrase.words), 3, 20),
+      separator,
+      capitalize:
+        typeof passphrase.capitalize === "boolean"
+          ? passphrase.capitalize
+          : DEFAULTS.passphrase.capitalize,
+      includeNumber:
+        typeof passphrase.includeNumber === "boolean"
+          ? passphrase.includeNumber
+          : DEFAULTS.passphrase.includeNumber,
+    },
+    username: {
+      type: username.type === "double" || username.type === "single" ? username.type : DEFAULTS.username.type,
+      capitalize:
+        typeof username.capitalize === "boolean"
+          ? username.capitalize
+          : DEFAULTS.username.capitalize,
+      includeNumber:
+        typeof username.includeNumber === "boolean"
+          ? username.includeNumber
+          : DEFAULTS.username.includeNumber,
+    },
+  };
+}
+
+function getStoredSettings() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    return normalizeSettings(JSON.parse(raw));
+  } catch (error) {
+    return null;
+  }
+}
+
+function setStoredSettings(settings) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+  } catch (error) {
+    // Ignore storage errors (private mode, etc.)
+  }
+}
+
+function applySettings(settings) {
+  const normalized = normalizeSettings(settings || DEFAULTS);
+
+  ui.password.length.value = `${normalized.password.length}`;
+  ui.password.includeUpper.checked = normalized.password.includeUpper;
+  ui.password.includeLower.checked = normalized.password.includeLower;
+  ui.password.includeNumbers.checked = normalized.password.includeNumbers;
+  ui.password.includeSpecial.checked = normalized.password.includeSpecial;
+  ui.password.minNumbers.value = `${normalized.password.minNumbers}`;
+  ui.password.minSpecial.value = `${normalized.password.minSpecial}`;
+  ui.password.avoidAmbiguous.checked = normalized.password.avoidAmbiguous;
+
+  ui.passphrase.words.value = `${normalized.passphrase.words}`;
+  ui.passphrase.separator.value = normalized.passphrase.separator;
+  ui.passphrase.capitalize.checked = normalized.passphrase.capitalize;
+  ui.passphrase.includeNumber.checked = normalized.passphrase.includeNumber;
+
+  ui.username.type.value = normalized.username.type;
+  ui.username.capitalize.checked = normalized.username.capitalize;
+  ui.username.includeNumber.checked = normalized.username.includeNumber;
+
+  updateMinInputs();
+}
+
+function getCurrentSettings() {
+  return {
+    tab: state.activeTab,
+    password: {
+      length: parseNumber(ui.password.length.value, DEFAULTS.password.length),
+      includeUpper: ui.password.includeUpper.checked,
+      includeLower: ui.password.includeLower.checked,
+      includeNumbers: ui.password.includeNumbers.checked,
+      includeSpecial: ui.password.includeSpecial.checked,
+      minNumbers: parseNumber(ui.password.minNumbers.value, DEFAULTS.password.minNumbers),
+      minSpecial: parseNumber(ui.password.minSpecial.value, DEFAULTS.password.minSpecial),
+      avoidAmbiguous: ui.password.avoidAmbiguous.checked,
+    },
+    passphrase: {
+      words: parseNumber(ui.passphrase.words.value, DEFAULTS.passphrase.words),
+      separator: ui.passphrase.separator.value,
+      capitalize: ui.passphrase.capitalize.checked,
+      includeNumber: ui.passphrase.includeNumber.checked,
+    },
+    username: {
+      type: ui.username.type.value,
+      capitalize: ui.username.capitalize.checked,
+      includeNumber: ui.username.includeNumber.checked,
+    },
+  };
+}
+
+function storeSettings() {
+  setStoredSettings(getCurrentSettings());
 }
 
 function updateMinInputs() {
@@ -394,6 +572,14 @@ function refreshUsername() {
   ui.username.output.textContent = next || "";
 }
 
+function resetDefaults() {
+  applySettings(DEFAULTS);
+  setActiveTab(DEFAULTS.tab);
+  refreshPassword();
+  refreshPassphrase();
+  refreshUsername();
+}
+
 function setActiveTab(next) {
   ui.tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === next;
@@ -404,12 +590,19 @@ function setActiveTab(next) {
   Object.entries(ui.panels).forEach(([key, panel]) => {
     panel.classList.toggle("is-active", key === next);
   });
+
+  state.activeTab = next;
+  storeSettings();
 }
 
 function bindEvents() {
   ui.tabs.forEach((tab) => {
     tab.addEventListener("click", () => setActiveTab(tab.dataset.tab));
   });
+
+  if (ui.reset) {
+    ui.reset.addEventListener("click", resetDefaults);
+  }
 
   ui.password.refresh.addEventListener("click", refreshPassword);
   ui.password.copy.addEventListener("click", () => {
@@ -459,6 +652,7 @@ function bindEvents() {
     input.addEventListener("input", () => {
       updateMinInputs();
       refreshPassword();
+      storeSettings();
     });
   });
 
@@ -470,7 +664,10 @@ function bindEvents() {
   ];
 
   passphraseInputs.forEach((input) => {
-    input.addEventListener("input", refreshPassphrase);
+    input.addEventListener("input", () => {
+      refreshPassphrase();
+      storeSettings();
+    });
   });
 
   const usernameInputs = [
@@ -480,11 +677,17 @@ function bindEvents() {
   ];
 
   usernameInputs.forEach((input) => {
-    input.addEventListener("input", refreshUsername);
+    input.addEventListener("input", () => {
+      refreshUsername();
+      storeSettings();
+    });
   });
 }
 
-updateMinInputs();
+const storedSettings = getStoredSettings();
+applySettings(storedSettings || DEFAULTS);
+setActiveTab((storedSettings && storedSettings.tab) || DEFAULTS.tab);
+
 bindEvents();
 refreshPassword();
 refreshPassphrase();

@@ -9,7 +9,7 @@ Live site: https://pass.airat.top and https://password.airat.top/
 ## Advantages
 
 - Fully local generation using `window.crypto`.
-- No storage, no history, and no analytics.
+- No history or analytics; only local settings are stored.
 - Instant copy on click with clear feedback.
 - Mobile-first layout that scales to desktop.
 - Offline-friendly static files for easy hosting.
