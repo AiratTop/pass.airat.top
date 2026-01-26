@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>pass.airat.top | Password, Passphrase &amp; Username Generator</title>
+    <title>pass.airat.top | Password, Passphrase, Username &amp; UUID Generator</title>
     <meta
       name="description"
-      content="Generate strong passwords, passphrases, and usernames locally in your browser. Private, fast, and offline-ready."
+      content="Generate strong passwords, passphrases, usernames, and UUIDs locally in your browser. Private, fast, and offline-ready."
     />
     <meta
       name="keywords"
-      content="password generator, passphrase, username generator, secure password, offline, local, airattop"
+      content="password generator, passphrase, username generator, uuid generator, secure password, offline, local, airattop"
     />
     <meta name="author" content="AiratTop" />
 
@@ -20,7 +20,7 @@
     <meta property="og:title" content="Pass.airat.top" />
     <meta
       property="og:description"
-      content="Generate strong passwords, passphrases, and usernames locally in your browser. Private, fast, and offline-ready."
+      content="Generate strong passwords, passphrases, usernames, and UUIDs locally in your browser. Private, fast, and offline-ready."
     />
     <meta property="og:image" content="https://pass.airat.top/screenshot.png" />
 
@@ -29,7 +29,7 @@
     <meta property="twitter:title" content="Pass.airat.top" />
     <meta
       property="twitter:description"
-      content="Generate strong passwords, passphrases, and usernames locally in your browser."
+      content="Generate strong passwords, passphrases, usernames, and UUIDs locally in your browser."
     />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,10 +58,10 @@
       <header class="brand">
         <div class="brand-copy">
           <p class="brand-eyebrow">pass.airat.top</p>
-          <h1>Password, Passphrase &amp; Username Generator</h1>
+          <h1>Password, Passphrase, Username &amp; UUID Generator</h1>
           <p class="brand-subtitle">
             Offline-friendly. Instant copy. Zero history. Open-source. Privacy-first — no counters,
-            no analytics, pure randomness.
+            no analytics, pure randomness (including UUID v4).
           </p>
         </div>
         <div class="brand-actions">
@@ -112,6 +112,17 @@
           type="button"
         >
           Username
+        </button>
+        <button
+          class="tab"
+          role="tab"
+          aria-selected="false"
+          aria-controls="panel-uuid"
+          id="tab-uuid"
+          data-tab="uuid"
+          type="button"
+        >
+          UUID
         </button>
       </nav>
 
@@ -304,6 +315,35 @@
             <span>Include number</span>
           </label>
         </div>
+      </section>
+
+      <section class="panel" id="panel-uuid" role="tabpanel" aria-labelledby="tab-uuid">
+        <div class="output" id="uuidOutputWrap">
+          <div class="output-value" id="uuidOutput" aria-live="polite"></div>
+        </div>
+        <div class="action-row">
+          <button class="action-button primary" type="button" id="uuidCopy">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
+                />
+              </svg>
+            </span>
+            Copy UUID
+          </button>
+          <button class="action-button secondary" type="button" id="uuidRefresh">
+            <span class="btn-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
+                />
+              </svg>
+            </span>
+            Regenerate UUID
+          </button>
+        </div>
+        <p class="status" id="uuidStatus" role="status"></p>
       </section>
     </main>
 

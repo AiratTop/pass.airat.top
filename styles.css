@@ -173,7 +173,7 @@ h1 {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   background: var(--surface);
   padding: 6px;
   border-radius: 18px;

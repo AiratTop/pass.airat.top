@@ -2,7 +2,7 @@
 
 [![pass.airat.top](https://raw.githubusercontent.com/AiratTop/pass.airat.top/main/screenshot.png)](https://pass.airat.top/)
 
-Static, privacy-first password toolkit for generating passwords, passphrases, and usernames directly in the browser.
+Static, privacy-first toolkit for generating passwords, passphrases, usernames, and UUIDs directly in the browser.
 
 Live site: https://pass.airat.top and https://password.airat.top/
 

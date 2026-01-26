@@ -12,6 +12,7 @@ const ui = {
     password: document.querySelector("#panel-password"),
     passphrase: document.querySelector("#panel-passphrase"),
     username: document.querySelector("#panel-username"),
+    uuid: document.querySelector("#panel-uuid"),
   },
   reset: document.querySelector("#resetDefaults"),
   password: {
@@ -52,6 +53,13 @@ const ui = {
     type: document.querySelector("#usernameType"),
     capitalize: document.querySelector("#usernameCapitalize"),
     includeNumber: document.querySelector("#usernameNumber"),
+  },
+  uuid: {
+    output: document.querySelector("#uuidOutput"),
+    outputWrap: document.querySelector("#uuidOutputWrap"),
+    refresh: document.querySelector("#uuidRefresh"),
+    copy: document.querySelector("#uuidCopy"),
+    status: document.querySelector("#uuidStatus"),
   },
 };
 
@@ -183,7 +191,10 @@ function normalizeSettings(raw) {
       : DEFAULTS.passphrase.separator;
 
   const tab =
-    safe.tab === "password" || safe.tab === "passphrase" || safe.tab === "username"
+    safe.tab === "password" ||
+    safe.tab === "passphrase" ||
+    safe.tab === "username" ||
+    safe.tab === "uuid"
       ? safe.tab
       : DEFAULTS.tab;
 
@@ -556,6 +567,25 @@ function buildUsername() {
   return username;
 }
 
+function buildUuid() {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    return window.crypto.randomUUID();
+  }
+
+  const bytes = new Uint8Array(16);
+  window.crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0"));
+  return (
+    `${hex[0]}${hex[1]}${hex[2]}${hex[3]}` +
+    `-${hex[4]}${hex[5]}` +
+    `-${hex[6]}${hex[7]}` +
+    `-${hex[8]}${hex[9]}` +
+    `-${hex[10]}${hex[11]}${hex[12]}${hex[13]}${hex[14]}${hex[15]}`
+  );
+}
+
 function refreshPassword() {
   const next = buildPassword();
   ui.password.output.textContent = next || "";
@@ -572,12 +602,18 @@ function refreshUsername() {
   ui.username.output.textContent = next || "";
 }
 
+function refreshUuid() {
+  const next = buildUuid();
+  ui.uuid.output.textContent = next || "";
+}
+
 function resetDefaults() {
   applySettings(DEFAULTS);
   setActiveTab(DEFAULTS.tab);
   refreshPassword();
   refreshPassphrase();
   refreshUsername();
+  refreshUuid();
 }
 
 function setActiveTab(next) {
@@ -637,6 +673,17 @@ function bindEvents() {
     copyText(ui.username.output.textContent, ui.username.status, "Username");
   });
 
+  ui.uuid.refresh.addEventListener("click", refreshUuid);
+  ui.uuid.copy.addEventListener("click", () => {
+    copyText(ui.uuid.output.textContent, ui.uuid.status, "UUID");
+  });
+  ui.uuid.outputWrap.addEventListener("click", (event) => {
+    if (event.target.closest("button")) {
+      return;
+    }
+    copyText(ui.uuid.output.textContent, ui.uuid.status, "UUID");
+  });
+
   const passwordInputs = [
     ui.password.length,
     ui.password.includeUpper,
@@ -692,3 +739,4 @@ bindEvents();
 refreshPassword();
 refreshPassphrase();
 refreshUsername();
+refreshUuid();
