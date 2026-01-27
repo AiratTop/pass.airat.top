@@ -6,6 +6,8 @@ Static, privacy-first toolkit for generating passwords, passphrases, usernames, 
 
 Live site: https://pass.airat.top and https://password.airat.top/
 
+UUID API repo: https://github.com/AiratTop/uuid.api.airat.top
+
 ## Advantages
 
 - Fully local generation using `window.crypto`.
