@@ -6,6 +6,11 @@ const PASSWORD = {
   ambiguous: new Set(["0", "O", "o", "1", "l", "I"]),
 };
 
+const PASSWORD_LIMITS = {
+  lengthMin: 1,
+  lengthMax: 64,
+};
+
 const ui = {
   tabs: Array.from(document.querySelectorAll(".tab")),
   panels: {
@@ -25,6 +30,7 @@ const ui = {
     strength: document.querySelector("#passwordStrength"),
     crack: document.querySelector("#passwordCrack"),
     length: document.querySelector("#passwordLength"),
+    lengthRange: document.querySelector("#passwordLengthRange"),
     includeUpper: document.querySelector("#includeUpper"),
     includeLower: document.querySelector("#includeLower"),
     includeNumbers: document.querySelector("#includeNumbers"),
@@ -201,7 +207,11 @@ function normalizeSettings(raw) {
   return {
     tab,
     password: {
-      length: clampNumber(parseNumber(password.length, DEFAULTS.password.length), 5, 128),
+      length: clampNumber(
+        parseNumber(password.length, DEFAULTS.password.length),
+        PASSWORD_LIMITS.lengthMin,
+        PASSWORD_LIMITS.lengthMax
+      ),
       includeUpper:
         typeof password.includeUpper === "boolean"
           ? password.includeUpper
@@ -218,8 +228,16 @@ function normalizeSettings(raw) {
         typeof password.includeSpecial === "boolean"
           ? password.includeSpecial
           : DEFAULTS.password.includeSpecial,
-      minNumbers: clampNumber(parseNumber(password.minNumbers, DEFAULTS.password.minNumbers), 0, 128),
-      minSpecial: clampNumber(parseNumber(password.minSpecial, DEFAULTS.password.minSpecial), 0, 128),
+      minNumbers: clampNumber(
+        parseNumber(password.minNumbers, DEFAULTS.password.minNumbers),
+        0,
+        PASSWORD_LIMITS.lengthMax
+      ),
+      minSpecial: clampNumber(
+        parseNumber(password.minSpecial, DEFAULTS.password.minSpecial),
+        0,
+        PASSWORD_LIMITS.lengthMax
+      ),
       avoidAmbiguous:
         typeof password.avoidAmbiguous === "boolean"
           ? password.avoidAmbiguous
@@ -271,10 +289,36 @@ function setStoredSettings(settings) {
   }
 }
 
+function updateLengthRangeFill(value) {
+  if (!ui.password.lengthRange) {
+    return;
+  }
+  const min = PASSWORD_LIMITS.lengthMin;
+  const max = PASSWORD_LIMITS.lengthMax;
+  const percent = ((value - min) / (max - min)) * 100;
+  const clamped = Math.min(Math.max(percent, 0), 100);
+  ui.password.lengthRange.style.setProperty("--range-progress", `${clamped}%`);
+}
+
+function setPasswordLength(value) {
+  const parsed = parseInt(value, 10);
+  const length = clampNumber(
+    Number.isNaN(parsed) ? DEFAULTS.password.length : parsed,
+    PASSWORD_LIMITS.lengthMin,
+    PASSWORD_LIMITS.lengthMax
+  );
+  ui.password.length.value = `${length}`;
+  if (ui.password.lengthRange) {
+    ui.password.lengthRange.value = `${length}`;
+  }
+  updateLengthRangeFill(length);
+  return length;
+}
+
 function applySettings(settings) {
   const normalized = normalizeSettings(settings || DEFAULTS);
 
-  ui.password.length.value = `${normalized.password.length}`;
+  setPasswordLength(normalized.password.length);
   ui.password.includeUpper.checked = normalized.password.includeUpper;
   ui.password.includeLower.checked = normalized.password.includeLower;
   ui.password.includeNumbers.checked = normalized.password.includeNumbers;
@@ -438,8 +482,7 @@ function updatePasswordStrength(password) {
 }
 
 function buildPassword() {
-  const length = clampNumber(parseInt(ui.password.length.value, 10), 5, 128);
-  ui.password.length.value = `${length}`;
+  const length = setPasswordLength(ui.password.length.value);
 
   const avoidAmbiguous = ui.password.avoidAmbiguous.checked;
   const sets = [];
@@ -464,7 +507,7 @@ function buildPassword() {
     const minNumbers = clampNumber(
       parseInt(ui.password.minNumbers.value, 10),
       0,
-      128
+      PASSWORD_LIMITS.lengthMax
     );
     ui.password.minNumbers.value = `${minNumbers}`;
     for (let i = 0; i < minNumbers; i += 1) {
@@ -477,7 +520,7 @@ function buildPassword() {
     const minSpecial = clampNumber(
       parseInt(ui.password.minSpecial.value, 10),
       0,
-      128
+      PASSWORD_LIMITS.lengthMax
     );
     ui.password.minSpecial.value = `${minSpecial}`;
     for (let i = 0; i < minSpecial; i += 1) {
@@ -491,8 +534,8 @@ function buildPassword() {
   }
 
   if (required.length > length) {
-    ui.password.error.textContent = "Increase length or lower minimums.";
-    return "";
+    ui.password.error.textContent = "";
+    return shuffle(required).slice(0, length).join("");
   }
 
   ui.password.error.textContent = "";
@@ -589,7 +632,23 @@ function buildUuid() {
 function refreshPassword() {
   const next = buildPassword();
   ui.password.output.textContent = next || "";
+  updatePasswordFit(next);
   updatePasswordStrength(next);
+}
+
+function updatePasswordFit(password) {
+  if (!ui.password.output) {
+    return;
+  }
+  ui.password.output.classList.remove("is-compact", "is-extra-compact");
+  if (!password) {
+    return;
+  }
+  if (password.length >= 60) {
+    ui.password.output.classList.add("is-extra-compact");
+  } else if (password.length >= 48) {
+    ui.password.output.classList.add("is-compact");
+  }
 }
 
 function refreshPassphrase() {
@@ -684,8 +743,25 @@ function bindEvents() {
     copyText(ui.uuid.output.textContent, ui.uuid.status, "UUID");
   });
 
+  if (ui.password.length) {
+    ui.password.length.addEventListener("input", (event) => {
+      setPasswordLength(event.target.value);
+      updateMinInputs();
+      refreshPassword();
+      storeSettings();
+    });
+  }
+
+  if (ui.password.lengthRange) {
+    ui.password.lengthRange.addEventListener("input", (event) => {
+      setPasswordLength(event.target.value);
+      updateMinInputs();
+      refreshPassword();
+      storeSettings();
+    });
+  }
+
   const passwordInputs = [
-    ui.password.length,
     ui.password.includeUpper,
     ui.password.includeLower,
     ui.password.includeNumbers,

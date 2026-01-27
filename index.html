@@ -173,8 +173,18 @@
           <h2>Options</h2>
           <label class="field">
             <span>Length</span>
-            <input type="number" id="passwordLength" min="5" max="128" value="30" />
-            <small>Value must be between 5 and 128.</small>
+            <div class="length-inputs">
+              <input type="number" id="passwordLength" min="1" max="64" value="30" />
+              <input
+                class="range-input"
+                type="range"
+                id="passwordLengthRange"
+                min="1"
+                max="64"
+                value="30"
+              />
+            </div>
+            <small>Value must be between 1 and 64.</small>
           </label>
 
           <div class="checks">
@@ -187,11 +197,11 @@
           <div class="grid">
             <label class="field">
               <span>Minimum numbers</span>
-              <input type="number" id="minNumbers" min="0" max="128" value="1" />
+              <input type="number" id="minNumbers" min="0" max="64" value="1" />
             </label>
             <label class="field">
               <span>Minimum special</span>
-              <input type="number" id="minSpecial" min="0" max="128" value="1" />
+              <input type="number" id="minSpecial" min="0" max="64" value="1" />
             </label>
           </div>
 
