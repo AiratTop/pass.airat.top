@@ -251,6 +251,26 @@ h1 {
   letter-spacing: -0.015em;
 }
 
+.output-value--uuid {
+  font-size: clamp(15px, 2.1vw, 19px);
+  white-space: pre;
+  text-align: left;
+  line-height: 1.55;
+  max-height: 340px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.output-value--uuid.is-single {
+  font-size: clamp(18px, 2.6vw, 24px);
+  white-space: normal;
+  text-align: center;
+  line-height: normal;
+  max-height: none;
+  overflow: visible;
+  padding-right: 0;
+}
+
 .output-meta {
   display: flex;
   flex-wrap: wrap;
@@ -361,6 +381,10 @@ h1 {
 .field {
   display: grid;
   gap: 6px;
+}
+
+.uuid-count-field {
+  max-width: 240px;
 }
 
 .field span {

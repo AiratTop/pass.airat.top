@@ -1,7 +1,7 @@
 # pass.airat.top
 
 Summary:
-Pass.airat.top is a static, privacy-first generator for passwords, passphrases, and usernames. Everything runs locally in the browser using secure randomness.
+Pass.airat.top is a static, privacy-first generator for passwords, passphrases, usernames, and UUIDs (including UUID lists from 1 to 10,000). Everything runs locally in the browser using secure randomness.
 
 Primary URL:
 https://pass.airat.top
@@ -10,6 +10,7 @@ Key features:
 - Password generator with length, character sets, minimums, and ambiguous-character filtering.
 - Passphrase generator with configurable word count and separator.
 - Username generator from a local word list with optional capitalization and numbers.
+- UUID v4 generator with batch output from 1 to 10,000 values and one-click copy.
 - One-click copy and regenerate actions.
 
 Tech stack:

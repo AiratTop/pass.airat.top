@@ -11,6 +11,11 @@ const PASSWORD_LIMITS = {
   lengthMax: 64,
 };
 
+const UUID_LIMITS = {
+  countMin: 1,
+  countMax: 10000,
+};
+
 const ui = {
   tabs: Array.from(document.querySelectorAll(".tab")),
   panels: {
@@ -63,6 +68,7 @@ const ui = {
   uuid: {
     output: document.querySelector("#uuidOutput"),
     outputWrap: document.querySelector("#uuidOutputWrap"),
+    count: document.querySelector("#uuidCount"),
     refresh: document.querySelector("#uuidRefresh"),
     copy: document.querySelector("#uuidCopy"),
     status: document.querySelector("#uuidStatus"),
@@ -72,6 +78,7 @@ const ui = {
 const state = {
   messageTimers: new Map(),
   activeTab: "password",
+  uuidList: [],
 };
 
 const STORAGE_KEY = "pass-airat-top-settings-v1";
@@ -98,6 +105,9 @@ const DEFAULTS = {
     type: "single",
     capitalize: false,
     includeNumber: true,
+  },
+  uuid: {
+    count: 1,
   },
 };
 
@@ -190,6 +200,7 @@ function normalizeSettings(raw) {
   const password = safe.password && typeof safe.password === "object" ? safe.password : {};
   const passphrase = safe.passphrase && typeof safe.passphrase === "object" ? safe.passphrase : {};
   const username = safe.username && typeof safe.username === "object" ? safe.username : {};
+  const uuid = safe.uuid && typeof safe.uuid === "object" ? safe.uuid : {};
 
   const separator =
     typeof passphrase.separator === "string" && passphrase.separator.length > 0
@@ -266,6 +277,13 @@ function normalizeSettings(raw) {
           ? username.includeNumber
           : DEFAULTS.username.includeNumber,
     },
+    uuid: {
+      count: clampNumber(
+        parseNumber(uuid.count, DEFAULTS.uuid.count),
+        UUID_LIMITS.countMin,
+        UUID_LIMITS.countMax
+      ),
+    },
   };
 }
 
@@ -315,6 +333,19 @@ function setPasswordLength(value) {
   return length;
 }
 
+function setUuidCount(value) {
+  const parsed = parseInt(value, 10);
+  const count = clampNumber(
+    Number.isNaN(parsed) ? DEFAULTS.uuid.count : parsed,
+    UUID_LIMITS.countMin,
+    UUID_LIMITS.countMax
+  );
+  if (ui.uuid.count) {
+    ui.uuid.count.value = `${count}`;
+  }
+  return count;
+}
+
 function applySettings(settings) {
   const normalized = normalizeSettings(settings || DEFAULTS);
 
@@ -335,6 +366,7 @@ function applySettings(settings) {
   ui.username.type.value = normalized.username.type;
   ui.username.capitalize.checked = normalized.username.capitalize;
   ui.username.includeNumber.checked = normalized.username.includeNumber;
+  setUuidCount(normalized.uuid.count);
 
   updateMinInputs();
 }
@@ -362,6 +394,13 @@ function getCurrentSettings() {
       type: ui.username.type.value,
       capitalize: ui.username.capitalize.checked,
       includeNumber: ui.username.includeNumber.checked,
+    },
+    uuid: {
+      count: clampNumber(
+        parseNumber(ui.uuid.count.value, DEFAULTS.uuid.count),
+        UUID_LIMITS.countMin,
+        UUID_LIMITS.countMax
+      ),
     },
   };
 }
@@ -629,6 +668,18 @@ function buildUuid() {
   );
 }
 
+function buildUuidList(count) {
+  const result = [];
+  for (let i = 0; i < count; i += 1) {
+    result.push(buildUuid());
+  }
+  return result;
+}
+
+function getUuidCopyText() {
+  return state.uuidList.join("\n");
+}
+
 function refreshPassword() {
   const next = buildPassword();
   ui.password.output.textContent = next || "";
@@ -662,8 +713,11 @@ function refreshUsername() {
 }
 
 function refreshUuid() {
-  const next = buildUuid();
-  ui.uuid.output.textContent = next || "";
+  const count = setUuidCount(ui.uuid.count.value);
+  const next = buildUuidList(count);
+  state.uuidList = next;
+  ui.uuid.output.textContent = next.join("\n");
+  ui.uuid.output.classList.toggle("is-single", count === 1);
 }
 
 function resetDefaults() {
@@ -734,14 +788,21 @@ function bindEvents() {
 
   ui.uuid.refresh.addEventListener("click", refreshUuid);
   ui.uuid.copy.addEventListener("click", () => {
-    copyText(ui.uuid.output.textContent, ui.uuid.status, "UUID");
+    copyText(getUuidCopyText(), ui.uuid.status, state.uuidList.length > 1 ? "UUID list" : "UUID");
   });
   ui.uuid.outputWrap.addEventListener("click", (event) => {
     if (event.target.closest("button")) {
       return;
     }
-    copyText(ui.uuid.output.textContent, ui.uuid.status, "UUID");
+    copyText(getUuidCopyText(), ui.uuid.status, state.uuidList.length > 1 ? "UUID list" : "UUID");
   });
+
+  if (ui.uuid.count) {
+    ui.uuid.count.addEventListener("input", () => {
+      refreshUuid();
+      storeSettings();
+    });
+  }
 
   if (ui.password.length) {
     ui.password.length.addEventListener("input", (event) => {
