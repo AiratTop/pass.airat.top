@@ -4,7 +4,7 @@
 
 Static, privacy-first toolkit for generating passwords, passphrases, usernames, and UUIDs directly in the browser, including UUID lists from 1 to 10,000.
 
-Live site: https://pass.airat.top and https://password.airat.top/
+Live site: https://pass.airat.top , https://password.airat.top/ , https://passphrase.airat.top/ and https://uuid.airat.top/
 
 UUID API repo: https://github.com/AiratTop/uuid.api.airat.top
 
