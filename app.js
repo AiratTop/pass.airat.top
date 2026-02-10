@@ -722,14 +722,34 @@ function refreshUuid() {
 
 function resetDefaults() {
   applySettings(DEFAULTS);
-  setActiveTab(DEFAULTS.tab);
+  setActiveTab(DEFAULTS.tab, { syncHash: true });
   refreshPassword();
   refreshPassphrase();
   refreshUsername();
   refreshUuid();
 }
 
-function setActiveTab(next) {
+function getTabFromHash() {
+  const candidate = window.location.hash.slice(1).trim().toLowerCase();
+  if (!candidate || !Object.prototype.hasOwnProperty.call(ui.panels, candidate)) {
+    return null;
+  }
+  return candidate;
+}
+
+function syncHashWithTab(tab) {
+  const nextHash = `#${tab}`;
+  if (window.location.hash === nextHash) {
+    return;
+  }
+  window.history.replaceState(null, "", nextHash);
+}
+
+function setActiveTab(next, options = {}) {
+  if (!Object.prototype.hasOwnProperty.call(ui.panels, next)) {
+    return;
+  }
+
   ui.tabs.forEach((tab) => {
     const isActive = tab.dataset.tab === next;
     tab.classList.toggle("is-active", isActive);
@@ -741,12 +761,22 @@ function setActiveTab(next) {
   });
 
   state.activeTab = next;
+  if (options.syncHash) {
+    syncHashWithTab(next);
+  }
   storeSettings();
 }
 
 function bindEvents() {
   ui.tabs.forEach((tab) => {
-    tab.addEventListener("click", () => setActiveTab(tab.dataset.tab));
+    tab.addEventListener("click", () => setActiveTab(tab.dataset.tab, { syncHash: true }));
+  });
+
+  window.addEventListener("hashchange", () => {
+    const tabFromHash = getTabFromHash();
+    if (tabFromHash) {
+      setActiveTab(tabFromHash);
+    }
   });
 
   if (ui.reset) {
@@ -870,7 +900,11 @@ function bindEvents() {
 
 const storedSettings = getStoredSettings();
 applySettings(storedSettings || DEFAULTS);
-setActiveTab((storedSettings && storedSettings.tab) || DEFAULTS.tab);
+
+const tabFromHash = getTabFromHash();
+setActiveTab(tabFromHash || (storedSettings && storedSettings.tab) || DEFAULTS.tab, {
+  syncHash: Boolean(tabFromHash),
+});
 
 bindEvents();
 refreshPassword();
