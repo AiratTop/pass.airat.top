@@ -1,6 +1,6 @@
 # pass.airat.top
 
-[![pass.airat.top](https://raw.githubusercontent.com/AiratTop/pass.airat.top/main/screenshot.png)](https://pass.airat.top/)
+[![pass.airat.top](https://raw.githubusercontent.com/AiratTop/pass.airat.top/main/public_html/screenshot.png)](https://pass.airat.top/)
 
 Static, privacy-first toolkit for generating passwords, passphrases, usernames, and UUIDs directly in the browser, including UUID lists from 1 to 10,000.
 
