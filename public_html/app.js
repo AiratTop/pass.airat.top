@@ -628,29 +628,20 @@ function refreshUsername() {
 
 function resetDefaults() {
   applySettings(DEFAULTS);
-  setActiveTab(DEFAULTS.tab, { syncHash: true });
+  setActiveTab(DEFAULTS.tab);
   refreshPassword();
   refreshPassphrase();
   refreshUsername();
 }
 
-function getTabFromHash() {
-  const candidate = window.location.hash.slice(1).trim().toLowerCase();
-  if (!candidate || !Object.prototype.hasOwnProperty.call(ui.panels, candidate)) {
-    return null;
-  }
-  return candidate;
-}
-
-function syncHashWithTab(tab) {
-  const nextHash = `#${tab}`;
-  if (window.location.hash === nextHash) {
+function clearLegacyHash() {
+  if (!window.location.hash) {
     return;
   }
-  window.history.replaceState(null, "", nextHash);
+  window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
 }
 
-function setActiveTab(next, options = {}) {
+function setActiveTab(next) {
   if (!Object.prototype.hasOwnProperty.call(ui.panels, next)) {
     return;
   }
@@ -666,22 +657,12 @@ function setActiveTab(next, options = {}) {
   });
 
   state.activeTab = next;
-  if (options.syncHash) {
-    syncHashWithTab(next);
-  }
   storeSettings();
 }
 
 function bindEvents() {
   ui.tabs.forEach((tab) => {
-    tab.addEventListener("click", () => setActiveTab(tab.dataset.tab, { syncHash: true }));
-  });
-
-  window.addEventListener("hashchange", () => {
-    const tabFromHash = getTabFromHash();
-    if (tabFromHash) {
-      setActiveTab(tabFromHash);
-    }
+    tab.addEventListener("click", () => setActiveTab(tab.dataset.tab));
   });
 
   if (ui.reset) {
@@ -784,10 +765,8 @@ function bindEvents() {
 const storedSettings = getStoredSettings();
 applySettings(storedSettings || DEFAULTS);
 
-const tabFromHash = getTabFromHash();
-setActiveTab(tabFromHash || (storedSettings && storedSettings.tab) || DEFAULTS.tab, {
-  syncHash: Boolean(tabFromHash),
-});
+clearLegacyHash();
+setActiveTab((storedSettings && storedSettings.tab) || DEFAULTS.tab);
 
 bindEvents();
 refreshPassword();
