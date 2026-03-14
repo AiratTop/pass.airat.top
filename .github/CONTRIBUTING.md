@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in improving the Markdown Live Preview app at md.airat.top. Contributions of all kinds are welcome, including bug reports, documentation improvements, and UI or UX polish.
+Thank you for your interest in improving pass.airat.top. Contributions of all kinds are welcome, including bug reports, documentation improvements, and UI or UX polish.
 
 ## How to Help
 
@@ -17,18 +17,18 @@ Thank you for your interest in improving the Markdown Live Preview app at md.air
 ## Development Workflow
 
 1. Fork the repository and clone your fork locally.
-2. Create a feature branch that describes your work (for example, `feature/better-shortcuts`).
+2. Create a feature branch that describes your work (for example, `feature/better-copy-feedback`).
 3. Make your changes and keep commits scoped and meaningful.
-4. Validate the changes locally by opening `index.html` in your browser.
-5. Check both light and dark modes, and verify layout on narrow screens.
+4. Validate the changes locally by opening `public_html/index.html` in your browser.
+5. Verify password, passphrase, and username flows on desktop and mobile widths.
 6. Open a pull request against the `main` branch and describe what changed and how you verified it.
 
 ## Pull Request Checklist
 
-- [ ] The app works by opening `index.html` directly (no build step required).
+- [ ] The app works by opening `public_html/index.html` directly (no build step required).
 - [ ] No console errors in the browser.
 - [ ] Changes are tested in at least one modern browser.
-- [ ] UI changes behave well on small screens and in dark mode.
+- [ ] UI changes behave well on small screens.
 - [ ] Documentation updated if user-facing behavior changed.
 
 ## Code Style and Standards
@@ -43,4 +43,4 @@ If you discover a security vulnerability, please do not open a public issue. Ins
 
 ## Questions or Feedback
 
-If you are unsure about anything before contributing, feel free to open a discussion or contact AiratTop at [mail@airat.top](mailto:mail@airat.top). Thanks!
+If you are unsure about anything before contributing, feel free to open a discussion or contact AiratTop at [mail@airat.top](mailto:mail@airat.top). Thanks.

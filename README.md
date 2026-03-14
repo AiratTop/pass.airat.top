@@ -2,16 +2,16 @@
 
 [![pass.airat.top](https://raw.githubusercontent.com/AiratTop/pass.airat.top/main/public_html/screenshot.png)](https://pass.airat.top/)
 
-Static, privacy-first toolkit for generating passwords, passphrases, usernames, and UUIDs directly in the browser, including UUID lists from 1 to 10,000.
+Static, privacy-first toolkit for generating passwords, passphrases, and usernames directly in the browser.
 
-Live site: https://pass.airat.top , https://password.airat.top/ and https://uuid.airat.top/
-
-UUID API repo: https://github.com/AiratTop/uuid.api.airat.top
+Live site: https://pass.airat.top and https://password.airat.top/
 
 ## Advantages
 
 - Fully local generation using `window.crypto`.
-- UUID v4 list generation from 1 to 10,000 values with one-click copy.
+- Password generator with flexible length and character controls.
+- Passphrase generator with customizable separator and word count.
+- Username generator from a local word list.
 - No history or analytics; only local settings are stored.
 - Instant copy on click with clear feedback.
 - Mobile-first layout that scales to desktop.

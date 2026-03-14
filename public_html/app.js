@@ -11,18 +11,12 @@ const PASSWORD_LIMITS = {
   lengthMax: 64,
 };
 
-const UUID_LIMITS = {
-  countMin: 1,
-  countMax: 10000,
-};
-
 const ui = {
   tabs: Array.from(document.querySelectorAll(".tab")),
   panels: {
     password: document.querySelector("#panel-password"),
     passphrase: document.querySelector("#panel-passphrase"),
     username: document.querySelector("#panel-username"),
-    uuid: document.querySelector("#panel-uuid"),
   },
   reset: document.querySelector("#resetDefaults"),
   password: {
@@ -65,20 +59,11 @@ const ui = {
     capitalize: document.querySelector("#usernameCapitalize"),
     includeNumber: document.querySelector("#usernameNumber"),
   },
-  uuid: {
-    output: document.querySelector("#uuidOutput"),
-    outputWrap: document.querySelector("#uuidOutputWrap"),
-    count: document.querySelector("#uuidCount"),
-    refresh: document.querySelector("#uuidRefresh"),
-    copy: document.querySelector("#uuidCopy"),
-    status: document.querySelector("#uuidStatus"),
-  },
 };
 
 const state = {
   messageTimers: new Map(),
   activeTab: "password",
-  uuidList: [],
 };
 
 const STORAGE_KEY = "pass-airat-top-settings-v1";
@@ -105,9 +90,6 @@ const DEFAULTS = {
     type: "single",
     capitalize: false,
     includeNumber: true,
-  },
-  uuid: {
-    count: 1,
   },
 };
 
@@ -200,7 +182,6 @@ function normalizeSettings(raw) {
   const password = safe.password && typeof safe.password === "object" ? safe.password : {};
   const passphrase = safe.passphrase && typeof safe.passphrase === "object" ? safe.passphrase : {};
   const username = safe.username && typeof safe.username === "object" ? safe.username : {};
-  const uuid = safe.uuid && typeof safe.uuid === "object" ? safe.uuid : {};
 
   const separator =
     typeof passphrase.separator === "string" && passphrase.separator.length > 0
@@ -208,10 +189,7 @@ function normalizeSettings(raw) {
       : DEFAULTS.passphrase.separator;
 
   const tab =
-    safe.tab === "password" ||
-    safe.tab === "passphrase" ||
-    safe.tab === "username" ||
-    safe.tab === "uuid"
+    safe.tab === "password" || safe.tab === "passphrase" || safe.tab === "username"
       ? safe.tab
       : DEFAULTS.tab;
 
@@ -267,7 +245,10 @@ function normalizeSettings(raw) {
           : DEFAULTS.passphrase.includeNumber,
     },
     username: {
-      type: username.type === "double" || username.type === "single" ? username.type : DEFAULTS.username.type,
+      type:
+        username.type === "double" || username.type === "single"
+          ? username.type
+          : DEFAULTS.username.type,
       capitalize:
         typeof username.capitalize === "boolean"
           ? username.capitalize
@@ -276,13 +257,6 @@ function normalizeSettings(raw) {
         typeof username.includeNumber === "boolean"
           ? username.includeNumber
           : DEFAULTS.username.includeNumber,
-    },
-    uuid: {
-      count: clampNumber(
-        parseNumber(uuid.count, DEFAULTS.uuid.count),
-        UUID_LIMITS.countMin,
-        UUID_LIMITS.countMax
-      ),
     },
   };
 }
@@ -333,19 +307,6 @@ function setPasswordLength(value) {
   return length;
 }
 
-function setUuidCount(value) {
-  const parsed = parseInt(value, 10);
-  const count = clampNumber(
-    Number.isNaN(parsed) ? DEFAULTS.uuid.count : parsed,
-    UUID_LIMITS.countMin,
-    UUID_LIMITS.countMax
-  );
-  if (ui.uuid.count) {
-    ui.uuid.count.value = `${count}`;
-  }
-  return count;
-}
-
 function applySettings(settings) {
   const normalized = normalizeSettings(settings || DEFAULTS);
 
@@ -366,7 +327,6 @@ function applySettings(settings) {
   ui.username.type.value = normalized.username.type;
   ui.username.capitalize.checked = normalized.username.capitalize;
   ui.username.includeNumber.checked = normalized.username.includeNumber;
-  setUuidCount(normalized.uuid.count);
 
   updateMinInputs();
 }
@@ -394,13 +354,6 @@ function getCurrentSettings() {
       type: ui.username.type.value,
       capitalize: ui.username.capitalize.checked,
       includeNumber: ui.username.includeNumber.checked,
-    },
-    uuid: {
-      count: clampNumber(
-        parseNumber(ui.uuid.count.value, DEFAULTS.uuid.count),
-        UUID_LIMITS.countMin,
-        UUID_LIMITS.countMax
-      ),
     },
   };
 }
@@ -543,11 +496,7 @@ function buildPassword() {
 
   if (ui.password.includeNumbers.checked && numbers) {
     sets.push(numbers);
-    const minNumbers = clampNumber(
-      parseInt(ui.password.minNumbers.value, 10),
-      0,
-      PASSWORD_LIMITS.lengthMax
-    );
+    const minNumbers = clampNumber(parseInt(ui.password.minNumbers.value, 10), 0, PASSWORD_LIMITS.lengthMax);
     ui.password.minNumbers.value = `${minNumbers}`;
     for (let i = 0; i < minNumbers; i += 1) {
       required.push(pickRandom(numbers));
@@ -556,11 +505,7 @@ function buildPassword() {
 
   if (ui.password.includeSpecial.checked && special) {
     sets.push(special);
-    const minSpecial = clampNumber(
-      parseInt(ui.password.minSpecial.value, 10),
-      0,
-      PASSWORD_LIMITS.lengthMax
-    );
+    const minSpecial = clampNumber(parseInt(ui.password.minSpecial.value, 10), 0, PASSWORD_LIMITS.lengthMax);
     ui.password.minSpecial.value = `${minSpecial}`;
     for (let i = 0; i < minSpecial; i += 1) {
       required.push(pickRandom(special));
@@ -649,37 +594,6 @@ function buildUsername() {
   return username;
 }
 
-function buildUuid() {
-  if (window.crypto && typeof window.crypto.randomUUID === "function") {
-    return window.crypto.randomUUID();
-  }
-
-  const bytes = new Uint8Array(16);
-  window.crypto.getRandomValues(bytes);
-  bytes[6] = (bytes[6] & 0x0f) | 0x40;
-  bytes[8] = (bytes[8] & 0x3f) | 0x80;
-  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0"));
-  return (
-    `${hex[0]}${hex[1]}${hex[2]}${hex[3]}` +
-    `-${hex[4]}${hex[5]}` +
-    `-${hex[6]}${hex[7]}` +
-    `-${hex[8]}${hex[9]}` +
-    `-${hex[10]}${hex[11]}${hex[12]}${hex[13]}${hex[14]}${hex[15]}`
-  );
-}
-
-function buildUuidList(count) {
-  const result = [];
-  for (let i = 0; i < count; i += 1) {
-    result.push(buildUuid());
-  }
-  return result;
-}
-
-function getUuidCopyText() {
-  return state.uuidList.join("\n");
-}
-
 function refreshPassword() {
   const next = buildPassword();
   ui.password.output.textContent = next || "";
@@ -712,21 +626,12 @@ function refreshUsername() {
   ui.username.output.textContent = next || "";
 }
 
-function refreshUuid() {
-  const count = setUuidCount(ui.uuid.count.value);
-  const next = buildUuidList(count);
-  state.uuidList = next;
-  ui.uuid.output.textContent = next.join("\n");
-  ui.uuid.output.classList.toggle("is-single", count === 1);
-}
-
 function resetDefaults() {
   applySettings(DEFAULTS);
   setActiveTab(DEFAULTS.tab, { syncHash: true });
   refreshPassword();
   refreshPassphrase();
   refreshUsername();
-  refreshUuid();
 }
 
 function getTabFromHash() {
@@ -816,24 +721,6 @@ function bindEvents() {
     copyText(ui.username.output.textContent, ui.username.status, "Username");
   });
 
-  ui.uuid.refresh.addEventListener("click", refreshUuid);
-  ui.uuid.copy.addEventListener("click", () => {
-    copyText(getUuidCopyText(), ui.uuid.status, state.uuidList.length > 1 ? "UUID list" : "UUID");
-  });
-  ui.uuid.outputWrap.addEventListener("click", (event) => {
-    if (event.target.closest("button")) {
-      return;
-    }
-    copyText(getUuidCopyText(), ui.uuid.status, state.uuidList.length > 1 ? "UUID list" : "UUID");
-  });
-
-  if (ui.uuid.count) {
-    ui.uuid.count.addEventListener("input", () => {
-      refreshUuid();
-      storeSettings();
-    });
-  }
-
   if (ui.password.length) {
     ui.password.length.addEventListener("input", (event) => {
       setPasswordLength(event.target.value);
@@ -884,11 +771,7 @@ function bindEvents() {
     });
   });
 
-  const usernameInputs = [
-    ui.username.type,
-    ui.username.capitalize,
-    ui.username.includeNumber,
-  ];
+  const usernameInputs = [ui.username.type, ui.username.capitalize, ui.username.includeNumber];
 
   usernameInputs.forEach((input) => {
     input.addEventListener("input", () => {
@@ -910,4 +793,3 @@ bindEvents();
 refreshPassword();
 refreshPassphrase();
 refreshUsername();
-refreshUuid();

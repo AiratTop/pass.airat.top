@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>pass.airat.top | Password, Passphrase, Username &amp; UUID Generator</title>
+    <title>pass.airat.top | Password, Passphrase &amp; Username Generator</title>
     <meta
       name="description"
-      content="Generate strong passwords, passphrases, usernames, and UUIDs locally in your browser, including UUID lists from 1 to 10,000. Private, fast, and offline-ready."
+      content="Generate strong passwords, passphrases, and usernames locally in your browser. Private, fast, and offline-ready."
     />
     <meta
       name="keywords"
-      content="password generator, passphrase, username generator, uuid generator, uuid list generator, secure password, offline, local, airattop"
+      content="password generator, passphrase generator, username generator, secure password, offline, local, airattop"
     />
     <meta name="author" content="AiratTop" />
 
@@ -20,7 +20,7 @@
     <meta property="og:title" content="Pass.airat.top" />
     <meta
       property="og:description"
-      content="Generate strong passwords, passphrases, usernames, and UUIDs locally in your browser, including UUID lists from 1 to 10,000. Private, fast, and offline-ready."
+      content="Generate strong passwords, passphrases, and usernames locally in your browser. Private, fast, and offline-ready."
     />
     <meta property="og:image" content="https://pass.airat.top/screenshot.png" />
 
@@ -29,7 +29,7 @@
     <meta property="twitter:title" content="Pass.airat.top" />
     <meta
       property="twitter:description"
-      content="Generate strong passwords, passphrases, usernames, and UUIDs locally in your browser, including UUID lists from 1 to 10,000."
+      content="Generate strong passwords, passphrases, and usernames locally in your browser."
     />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,19 +43,21 @@
     <meta name="google-site-verification" content="zuHpP1sB8u4uv7gVtMj2RNaGCoxq2lGMYENOCMovy1Y" />
     <meta name="yandex-verification" content="6d08a6d5c02c329e" />
     <link rel="canonical" href="https://pass.airat.top/" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" href="/favicon.ico">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <link rel="stylesheet" href="styles.css" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-CVEGGNPJXK"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-CVEGGNPJXK');
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-CVEGGNPJXK");
     </script>
   </head>
   <body>
@@ -65,22 +67,14 @@
       <header class="brand">
         <div class="brand-copy">
           <p class="brand-eyebrow">pass.airat.top</p>
-          <h1>Password, Passphrase, Username &amp; UUID Generator</h1>
+          <h1>Password, Passphrase &amp; Username Generator</h1>
           <p class="brand-subtitle">
-            Offline-friendly. Instant copy. Zero history. Open-source. Privacy-first — no counters,
-            no analytics, pure randomness (including UUID v4 batch generation up to 10,000).
+            Offline-friendly. Instant copy. Zero history. Open-source. Privacy-first.
           </p>
         </div>
         <div class="brand-actions">
-          <button class="repo-link reset-button" id="resetDefaults" type="button">
-            Reset defaults
-          </button>
-          <a
-            class="repo-link"
-            href="https://github.com/AiratTop/pass.airat.top"
-            target="_blank"
-            rel="noreferrer"
-          >
+          <button class="repo-link reset-button" id="resetDefaults" type="button">Reset defaults</button>
+          <a class="repo-link" href="https://github.com/AiratTop/pass.airat.top" target="_blank" rel="noreferrer">
             GitHub
           </a>
         </div>
@@ -120,25 +114,9 @@
         >
           Username
         </button>
-        <button
-          class="tab"
-          role="tab"
-          aria-selected="false"
-          aria-controls="panel-uuid"
-          id="tab-uuid"
-          data-tab="uuid"
-          type="button"
-        >
-          UUID
-        </button>
       </nav>
 
-      <section
-        class="panel is-active"
-        id="panel-password"
-        role="tabpanel"
-        aria-labelledby="tab-password"
-      >
+      <section class="panel is-active" id="panel-password" role="tabpanel" aria-labelledby="tab-password">
         <div class="output" id="passwordOutputWrap">
           <div class="output-value" id="passwordOutput" aria-live="polite"></div>
           <div class="output-meta">
@@ -182,14 +160,7 @@
             <span>Length</span>
             <div class="length-inputs">
               <input type="number" id="passwordLength" min="1" max="64" value="30" />
-              <input
-                class="range-input"
-                type="range"
-                id="passwordLengthRange"
-                min="1"
-                max="64"
-                value="30"
-              />
+              <input class="range-input" type="range" id="passwordLengthRange" min="1" max="64" value="30" />
             </div>
             <small>Value must be between 1 and 64.</small>
           </label>
@@ -220,12 +191,7 @@
         </div>
       </section>
 
-      <section
-        class="panel"
-        id="panel-passphrase"
-        role="tabpanel"
-        aria-labelledby="tab-passphrase"
-      >
+      <section class="panel" id="panel-passphrase" role="tabpanel" aria-labelledby="tab-passphrase">
         <div class="output" id="passphraseOutputWrap">
           <div class="output-value" id="passphraseOutput" aria-live="polite"></div>
         </div>
@@ -258,10 +224,7 @@
           <label class="field">
             <span>Number of words</span>
             <input type="number" id="passphraseWords" min="3" max="20" value="6" />
-            <small>
-              Value must be between 3 and 20. Use 6 words or more for stronger
-              phrases.
-            </small>
+            <small>Value must be between 3 and 20. Use 6 words or more for stronger phrases.</small>
           </label>
 
           <label class="field">
@@ -280,12 +243,7 @@
         </div>
       </section>
 
-      <section
-        class="panel"
-        id="panel-username"
-        role="tabpanel"
-        aria-labelledby="tab-username"
-      >
+      <section class="panel" id="panel-username" role="tabpanel" aria-labelledby="tab-username">
         <div class="output" id="usernameOutputWrap">
           <div class="output-value" id="usernameOutput" aria-live="polite"></div>
         </div>
@@ -332,40 +290,6 @@
             <span>Include number</span>
           </label>
         </div>
-      </section>
-
-      <section class="panel" id="panel-uuid" role="tabpanel" aria-labelledby="tab-uuid">
-        <label class="field uuid-count-field">
-          <span>Count (1-10000)</span>
-          <input type="number" id="uuidCount" min="1" max="10000" value="1" />
-          <small>Generates one UUID per line for quick paste into tables.</small>
-        </label>
-        <div class="output" id="uuidOutputWrap">
-          <div class="output-value output-value--uuid is-single" id="uuidOutput" aria-live="polite"></div>
-        </div>
-        <div class="action-row">
-          <button class="action-button primary" type="button" id="uuidCopy">
-            <span class="btn-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path
-                  d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"
-                />
-              </svg>
-            </span>
-            Copy UUIDs
-          </button>
-          <button class="action-button secondary" type="button" id="uuidRefresh">
-            <span class="btn-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path
-                  d="M20 12a8 8 0 0 1-14.31 4.9l-1.69 1.69V14h4.6l-1.61 1.61A6 6 0 1 0 12 6c-1.24 0-2.41.38-3.39 1.03L7.16 5.58A7.94 7.94 0 0 1 12 4a8 8 0 0 1 8 8Z"
-                />
-              </svg>
-            </span>
-            Regenerate UUIDs
-          </button>
-        </div>
-        <p class="status" id="uuidStatus" role="status"></p>
       </section>
 
       <footer class="doc-footer">
