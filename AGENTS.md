@@ -5,7 +5,8 @@ Public privacy-first password/passphrase/username generator (`pass.airat.top`).
 
 ## Repository Role
 - Category: `*.airat.top` (public static tool).
-- Deployment platform: Cloudflare Pages.
+- Deployment platform: Cloudflare Workers (static assets).
+- Deployment configuration: `wrangler.jsonc`.
 - Main content directory: `public_html`.
 
 ## Content and Structure
@@ -22,4 +23,4 @@ Public privacy-first password/passphrase/username generator (`pass.airat.top`).
 
 ## AI Working Notes
 - Preserve fully local generation (`window.crypto`) and no backend dependency.
-- Keep compatibility for both domains: `pass.airat.top` and `password.airat.top`.
+- Keep `pass.airat.top` as the primary domain and preserve the `password.airat.top` redirect.

@@ -2,9 +2,10 @@
 
 [![pass.airat.top](https://raw.githubusercontent.com/AiratTop/pass.airat.top/main/public_html/screenshot.png)](https://pass.airat.top/)
 
-Static, privacy-first toolkit for generating passwords, passphrases, and usernames directly in the browser.
+Static, privacy-first toolkit for generating passwords, passphrases, and usernames directly in the browser. Deployed as static assets on Cloudflare Workers.
 
-- Live site: https://pass.airat.top and https://password.airat.top
+- Live site: https://pass.airat.top
+- Redirect: https://password.airat.top
 - Status page: https://status.airat.top
 
 ## Advantages
@@ -20,10 +21,15 @@ Static, privacy-first toolkit for generating passwords, passphrases, and usernam
 
 ## What is inside
 
-- `index.html` — layout and metadata.
-- `styles.css` — theme, layout, and animations.
-- `app.js` — generator logic and UI wiring.
-- `wordlist.js` — local word list for passphrases and usernames.
+- `public_html/index.html` — layout and metadata.
+- `public_html/styles.css` — theme, layout, and animations.
+- `public_html/app.js` — generator logic and UI wiring.
+- `public_html/wordlist.js` — local word list for passphrases and usernames.
+- `wrangler.jsonc` — Cloudflare Worker and static asset configuration.
+
+## Deployment
+
+Cloudflare Workers Builds deploys the contents of `public_html` as static assets. The project has no build step; deployment uses `npx wrangler deploy` with the settings in `wrangler.jsonc`.
 
 ## License
 
