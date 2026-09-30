@@ -18,7 +18,7 @@ Public privacy-first password/passphrase/username generator (`pass.airat.top`).
 ## Site Conventions
 - Keep UI style consistent with AiratTop tools.
 - Keep SEO metadata and social tags in `index.html`.
-- Keep the Google Analytics counter and other required site-verification tags.
+- Keep the required site-verification tags. No analytics or other third-party tracking scripts: this tool handles what users type into it.
 - Publish static assets from `public_html`.
 
 ## AI Working Notes
